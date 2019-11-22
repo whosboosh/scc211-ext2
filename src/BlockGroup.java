@@ -1,15 +1,28 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class BlockGroup {
     private Superblock superblock;
     private GroupDesc groupDesc;
 
-    public BlockGroup(byte[] bytes, RandomAccessFile file) throws IOException {
-        //  Get superblock
-        superblock = new Superblock(bytes, file);
+    public BlockGroup(RandomAccessFile file) throws IOException {
 
-        groupDesc = new GroupDesc(bytes, file);
+        superblock = new Superblock(file);
+
+        groupDesc = new GroupDesc(file);
+
+        // Read Inode from Inode Table using Inode Table pointer from Group Descriptor
+        int inodePointer = groupDesc.getInodeTablePointer();
+        int inodeSize = superblock.getInodeSize();
+
+        System.out.println("Inode Size: "+inodeSize);
+
+        // Seek file 5120 bytes in to access Inode Table
+        ByteBuffer buffer = Helper.wrap(inodeSize, file, 5120);
+        System.out.println(Arrays.toString(buffer.array()));
+        //Inode inode = buffer.get
 
     }
 

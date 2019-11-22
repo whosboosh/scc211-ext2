@@ -6,12 +6,9 @@ public class GroupDesc {
 
     private int inodeTablePointer;
 
-    public GroupDesc(byte[] bytes, RandomAccessFile file) throws IOException {
+    public GroupDesc(RandomAccessFile file) throws IOException {
 
-        file.seek(2048);
-        file.read(bytes);
-
-        ByteBuffer buffer = Helper.wrap(bytes);
+        ByteBuffer buffer = Helper.wrap(1024, file, 2048);
 
         inodeTablePointer = buffer.getInt(8);
     }

@@ -9,12 +9,9 @@ public class Superblock {
     private int inodeSize;
     private ByteBuffer volumeLabel;
 
-    public Superblock(byte[] bytes, RandomAccessFile file) throws IOException {
+    public Superblock(RandomAccessFile file) throws IOException {
 
-        file.seek(1024);
-        file.read(bytes);
-
-        ByteBuffer buffer = Helper.wrap(bytes);
+        ByteBuffer buffer = Helper.wrap(1024, file, 1024);
 
         magicNumber = buffer.getShort(56);
         numBlocks = buffer.getInt(32);
@@ -26,6 +23,7 @@ public class Superblock {
     public short getMagicNumber() {
         return magicNumber;
     }
+
     public int getNumBlocks() {
         return numBlocks;
     }
