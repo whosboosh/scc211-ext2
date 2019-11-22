@@ -19,11 +19,13 @@ public class Volume extends RandomAccessFile {
         System.out.println(read());
         System.out.println(length());
 
-        byte[] bytes = new byte[2048];
+        byte[] bytes = new byte[1024];
+        seek(1024);
         read(bytes);
-        System.out.println(Arrays.toString(bytes));
+        //System.out.println(Arrays.toString(bytes));
 
-        //ByteBuffer buffer = ByteBuffer.allocate();
+        ByteBuffer superBlock = Helper.wrap(bytes);
+        System.out.println(superBlock.getShort(56));
     }
 
 
