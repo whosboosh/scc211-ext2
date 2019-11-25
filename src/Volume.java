@@ -21,6 +21,9 @@ public class Volume extends RandomAccessFile {
 
         BlockGroup blockGroup = new BlockGroup(this);
 
+        // Read root directory
+        
+
         //System.out.println(blockGroup.getSuperblock().getMagicNumber());
 
         //System.out.println(blockGroup.getGroupDesc().getInodeTablePointer());

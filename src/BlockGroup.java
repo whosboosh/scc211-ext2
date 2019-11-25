@@ -4,6 +4,7 @@ import java.io.RandomAccessFile;
 public class BlockGroup {
     private Superblock superblock;
     private GroupDesc groupDesc;
+    private Inode inode;
 
     public BlockGroup(RandomAccessFile file) throws IOException {
 
@@ -11,7 +12,7 @@ public class BlockGroup {
 
         groupDesc = new GroupDesc(file);
 
-        Inode inode = new Inode(file, superblock, groupDesc);
+        inode = new Inode(file, superblock, groupDesc, 1);
 
     }
 
@@ -22,4 +23,6 @@ public class BlockGroup {
     public GroupDesc getGroupDesc() {
         return groupDesc;
     }
+
+    public Inode getInode() { return inode; }
 }

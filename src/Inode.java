@@ -20,7 +20,7 @@ public class Inode {
     private int doubleIndirect;
     private int fileSizeUpper;
 
-    public Inode(RandomAccessFile file, Superblock superblock, GroupDesc groupDesc) throws IOException {
+    public Inode(RandomAccessFile file, Superblock superblock, GroupDesc groupDesc, int inodeNumber) throws IOException {
 
         // Read Inode from Inode Table using Inode Table pointer from Group Descriptor
         int inodePointer = groupDesc.getInodeTablePointer();
@@ -28,7 +28,7 @@ public class Inode {
 
         System.out.println("Inode Size: "+inodeSize);
 
-        ByteBuffer buffer = Helper.wrap(inodeSize, file, (1024*inodePointer)+128);
+        ByteBuffer buffer = Helper.wrap(inodeSize, file, (1024*inodePointer)+(inodeNumber*128));
 
         fileMode = buffer.getShort(0);
         userID = buffer.getShort(2);
@@ -42,7 +42,6 @@ public class Inode {
 
         for (int i = 0; i < 12; i++) {
             pointers[i] = buffer.getInt((i*4)+40);
-            System.out.println(i);
         }
 
         indirectPointer = buffer.getInt(90);
