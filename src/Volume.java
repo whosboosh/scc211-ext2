@@ -22,7 +22,7 @@ public class Volume extends RandomAccessFile {
         BlockGroup blockGroup = new BlockGroup(this);
 
         // Read root directory
-        
+        Directory rootDirectory = new Directory(blockGroup.getInode().getPointers()[0], this);
 
         //System.out.println(blockGroup.getSuperblock().getMagicNumber());
 

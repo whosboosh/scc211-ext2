@@ -50,9 +50,9 @@ public class Inode {
         fileSizeUpper = buffer.getInt(106);
 
 
-        System.out.println(Arrays.toString(buffer.array()));
+        //System.out.println(Arrays.toString(buffer.array()));
         //Helper.dumpHexBytes(buffer.array());
-        System.out.println(Arrays.toString(pointers));
+        //System.out.println(Arrays.toString(pointers));
         //System.out.println(fileMode);
     }
 
@@ -92,6 +92,9 @@ public class Inode {
         return numHardLinks;
     }
 
+    public int[] getPointers() {
+        return pointers;
+    }
 
 
     public int getIndirectPointer() {

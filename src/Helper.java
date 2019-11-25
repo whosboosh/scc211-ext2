@@ -17,7 +17,8 @@ public class Helper {
         file.read(bytes);
         return wrap(bytes);
     }
-    
+
+    /*
     public static void dumpHexBytes(byte[] bytes) {
         int i = 0;
         for (byte b : bytes) {
@@ -30,7 +31,7 @@ public class Helper {
             }
 
             if (i >= 16 && i <= 24) {
-                char ch = (char)b;
+                char ch = (char) b;
                 System.out.print(ch);
                 System.out.print(" ");
             } else {
@@ -40,8 +41,29 @@ public class Helper {
             i++;
             if (i == 24) i = 0;
         }
-    }
+    }*/
 
+    public static void dumpHexBytes(byte[] bytes) {
+        for (int i = 0; i < bytes.length / 16; i++) {
+
+            for (int k = 0; k < 32; k++) {
+
+                if (k % 8 == 0 && k != 0) {
+                    System.out.print(" | ");
+                }
+
+                if (k < 16) {
+                    System.out.print(String.format("%02X", bytes[(i*16)+k]));
+                    System.out.print(" ");
+                } else {
+                    char ch = (char) bytes[(i*16)+(k-16)];
+                    System.out.print(ch);
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
+    }
     
 
 }
