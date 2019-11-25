@@ -14,7 +14,7 @@ public class Inode {
     private int deletedTime;
     private short groupID;
     private short numHardLinks;
-    private ByteBuffer pointers;
+    private int[] pointers = new int[12];
     private int indirectPointer;
     private int tripleIndirect;
     private int doubleIndirect;
@@ -28,7 +28,7 @@ public class Inode {
 
         System.out.println("Inode Size: "+inodeSize);
 
-        ByteBuffer buffer = Helper.wrap(inodeSize, file, 1024*inodePointer);
+        ByteBuffer buffer = Helper.wrap(inodeSize, file, (1024*inodePointer)+128);
 
         fileMode = buffer.getShort(0);
         userID = buffer.getShort(2);
@@ -39,7 +39,12 @@ public class Inode {
         deletedTime = buffer.getInt(20);
         groupID = buffer.getShort(24);
         numHardLinks = buffer.getShort(26);
-        pointers = buffer.get(buffer.array(), 42, 48);
+
+        for (int i = 0; i < 12; i++) {
+            pointers[i] = buffer.getInt((i*4)+40);
+            System.out.println(i);
+        }
+
         indirectPointer = buffer.getInt(90);
         doubleIndirect = buffer.getInt(94);
         tripleIndirect = buffer.getInt(98);
@@ -47,7 +52,9 @@ public class Inode {
 
 
         System.out.println(Arrays.toString(buffer.array()));
-        System.out.println(userID);
+        //Helper.dumpHexBytes(buffer.array());
+        System.out.println(Arrays.toString(pointers));
+        //System.out.println(fileMode);
     }
 
     public short getFileMode() {
@@ -86,9 +93,7 @@ public class Inode {
         return numHardLinks;
     }
 
-    public ByteBuffer getPointers() {
-        return pointers;
-    }
+
 
     public int getIndirectPointer() {
         return indirectPointer;
