@@ -56,9 +56,16 @@ public class Helper {
                     System.out.print(String.format("%02X", bytes[(i*16)+k]));
                     System.out.print(" ");
                 } else {
+                    // Not all bytes are ASCII characters
                     char ch = (char) bytes[(i*16)+(k-16)];
-                    System.out.print(ch);
-                    System.out.print(" ");
+                    // ASCII characters are valid if the value is between 32 and 127
+                    if (ch >= 32 && ch < 127) {
+                        System.out.print(ch);
+                        System.out.print(" ");
+                    } else {
+                        System.out.print(".");
+                        System.out.print(" ");
+                    }
                 }
             }
             System.out.println();
