@@ -17,8 +17,8 @@ public class DirectoryEntry {
         nameLen = buffer.get(6);
         fileType = buffer.get(7);
 
-        fileName = new byte[length];
-        for (int i = 8; i < length + 8; i++) {
+        fileName = new byte[nameLen];
+        for (int i = 8; i < nameLen + 8; i++) {
             fileName[i-8] = buffer.get(i);
         }
 
