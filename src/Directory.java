@@ -20,17 +20,31 @@ public class Directory {
         while (ptr < directoryLength) {
             buffer.position(ptr);
 
-            System.out.println(Arrays.toString(buffer.array()));
+            ByteBuffer buf = Helper.wrap(1024, file, (pointer*1024)+ptr);
 
-            ptr+=12;
-            //ptr+=(new DirectoryEntry(buffer, file, superblock, groupDesc).getLength());
-            System.out.println(ptr);
+            //System.out.println(Arrays.toString(buf.array()));
 
+            DirectoryEntry directoryEntry = new DirectoryEntry(buf, file, superblock, groupDesc);
+
+            ptr+=(directoryEntry.getLength());
+            //System.out.println(ptr);
+
+            for (byte b : directoryEntry.getFileName()) {
+                char ch = (char) b;
+
+                if (ch >= 32 && ch < 127) {
+
+                    System.out.print(ch);
+                }
+            }
+            //System.out.println(directoryEntry.g)
+
+            System.out.println();
 
             //System.out.println(Arrays.toString(directoryEntry.getFileName()));
             //System.out.println(directoryEntry.getLength());
             //Helper.dumpHexBytes(buffer.array());
-            System.out.println("-------------------------");
+            //System.out.println("-------------------------");
         }
 
 
