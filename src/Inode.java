@@ -7,7 +7,6 @@ public class Inode {
 
     private short fileMode;
     private short userID;
-    private int fileSizeLower;
     private int lastAccessTime;
     private int creationTime;
     private int lastModified;
@@ -18,7 +17,7 @@ public class Inode {
     private int indirectPointer;
     private int tripleIndirect;
     private int doubleIndirect;
-    private int fileSizeUpper;
+    private long fileSize;
 
     public Inode(RandomAccessFile file, Superblock superblock, GroupDesc groupDesc, int inodeNumber) throws IOException {
 
@@ -26,13 +25,13 @@ public class Inode {
         int inodePointer = groupDesc.getInodeTablePointer();
         int inodeSize = superblock.getInodeSize();
 
-        System.out.println("Inode Size: "+inodeSize);
+        //System.out.println("Inode Size: "+inodeSize);
 
         ByteBuffer buffer = Helper.wrap(inodeSize, file, (1024*inodePointer)+(inodeNumber*128));
 
         fileMode = buffer.getShort(0);
         userID = buffer.getShort(2);
-        fileSizeLower = buffer.getInt(4);
+        int fileSizeLower = buffer.getInt(4);
         lastAccessTime = buffer.getInt(8);
         creationTime = buffer.getInt(12);
         lastModified = buffer.getInt(16);
@@ -44,11 +43,12 @@ public class Inode {
             pointers[i] = buffer.getInt((i*4)+40);
         }
 
-        indirectPointer = buffer.getInt(90);
-        doubleIndirect = buffer.getInt(94);
-        tripleIndirect = buffer.getInt(98);
-        fileSizeUpper = buffer.getInt(106);
+        indirectPointer = buffer.getInt(88);
+        doubleIndirect = buffer.getInt(92);
+        tripleIndirect = buffer.getInt(96);
+        int fileSizeUpper = buffer.getInt(108);
 
+        fileSize = (((long)fileSizeUpper) << 32) | (fileSizeLower & 0xffffffffL);
 
         //System.out.println(Arrays.toString(buffer.array()));
         //Helper.dumpHexBytes(buffer.array());
@@ -62,10 +62,6 @@ public class Inode {
 
     public short getUserID() {
         return userID;
-    }
-
-    public int getFileSizeLower() {
-        return fileSizeLower;
     }
 
     public int getLastAccessTime() {
@@ -96,6 +92,7 @@ public class Inode {
         return pointers;
     }
 
+    public long getFileSize() { return fileSize; }
 
     public int getIndirectPointer() {
         return indirectPointer;
@@ -105,8 +102,5 @@ public class Inode {
         return tripleIndirect;
     }
 
-    public int getFileSizeUpper() {
-        return fileSizeUpper;
-    }
 
 }

@@ -15,18 +15,13 @@ public class Volume extends RandomAccessFile {
 
     public void initialise() throws IOException {
 
-        // Read bytes from files
-        //System.out.println(read());
-        //System.out.println(length());
-
         BlockGroup blockGroup = new BlockGroup(this);
 
         // Read root directory
-        Directory rootDirectory = new Directory(blockGroup.getInode().getPointers()[0], blockGroup.getInode().getFileSizeLower() this);
+        Directory rootDirectory = new Directory(blockGroup.getRootInode().getPointers()[0], blockGroup.getRootInode().getFileSize(), this, blockGroup.getSuperblock(), blockGroup.getGroupDesc());
 
         //System.out.println(blockGroup.getSuperblock().getMagicNumber());
 
-        //System.out.println(blockGroup.getGroupDesc().getInodeTablePointer());
     }
 
 
