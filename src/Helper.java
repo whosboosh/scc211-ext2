@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Date;
 
 public class Helper {
 
@@ -35,6 +36,9 @@ public class Helper {
                     // ASCII characters are valid if the value is between 32 and 127
                     if (ch >= 32 && ch < 127) {
                         System.out.print(ch);
+                        System.out.print(" ");
+                    } else if (bytes[(i*16)+(k-16)] != 00) {
+                        System.out.print(bytes[(i*16)+(k-16)]);
                         System.out.print(" ");
                     } else {
                         System.out.print("*");

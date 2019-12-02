@@ -18,16 +18,22 @@ public class Inode {
     private int tripleIndirect;
     private int doubleIndirect;
     private long fileSize;
+    private ByteBuffer buffer;
 
     public Inode(RandomAccessFile file, Superblock superblock, GroupDesc groupDesc, int inodeNumber) throws IOException {
 
-        // Read Inode from Inode Table using Inode Table pointer from Group Descriptor
+        // Inode Pointer references the start of the inode table
         int inodePointer = groupDesc.getInodeTablePointer();
+
+        // = 128 bytes
         int inodeSize = superblock.getInodeSize();
 
-        //System.out.println("Inode Size: "+inodeSize);
+        // Debugging...
+        System.out.println("Inode Size: "+((inodeNumber)));
 
-        ByteBuffer buffer = Helper.wrap(inodeSize, file, (1024*inodePointer)+(inodeNumber*128));
+        // To seek to the chosen inode we just have to times the inodeNumber by 128 and add on the value
+        // of the position of the first inode.
+        buffer = Helper.wrap(inodeSize, file, ((inodeNumber)*inodeSize)+(1024*inodePointer));
 
         fileMode = buffer.getShort(0);
         userID = buffer.getShort(2);
@@ -39,6 +45,8 @@ public class Inode {
         groupID = buffer.getShort(24);
         numHardLinks = buffer.getShort(26);
 
+        // Pointers contain references to the datablocks which we can use to
+        // create other directory objects
         for (int i = 0; i < 12; i++) {
             pointers[i] = buffer.getInt((i*4)+40);
         }
@@ -50,10 +58,6 @@ public class Inode {
 
         fileSize = (((long)fileSizeUpper) << 32) | (fileSizeLower & 0xffffffffL);
 
-        //System.out.println(Arrays.toString(buffer.array()));
-        //Helper.dumpHexBytes(buffer.array());
-        //System.out.println(Arrays.toString(pointers));
-        //System.out.println(fileMode);
     }
 
     public short getFileMode() {
@@ -100,6 +104,10 @@ public class Inode {
 
     public int getTripleIndirect() {
         return tripleIndirect;
+    }
+
+    public byte[] getBuffer() {
+        return buffer.array();
     }
 
 

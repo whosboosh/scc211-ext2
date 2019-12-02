@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 public class Volume extends RandomAccessFile {
 
+    private Directory root;
+
     public Volume(String path) throws IOException {
 
         super(new File(path), "r");
@@ -18,10 +20,11 @@ public class Volume extends RandomAccessFile {
         BlockGroup blockGroup = new BlockGroup(this);
 
         // Read root directory
-        Directory rootDirectory = new Directory(blockGroup.getRootInode().getPointers()[0], blockGroup.getRootInode().getFileSize(), this, blockGroup.getSuperblock(), blockGroup.getGroupDesc());
+        root = new Directory(blockGroup.getRootInode().getPointers()[0], blockGroup.getRootInode().getFileSize(), this, blockGroup.getSuperblock(), blockGroup.getGroupDesc());
+    }
 
-        //System.out.println(blockGroup.getSuperblock().getMagicNumber());
-
+    public Directory getRoot() {
+        return root;
     }
 
 
