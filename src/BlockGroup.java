@@ -12,7 +12,7 @@ public class BlockGroup {
 
         groupDesc = new GroupDesc(file);
 
-        rootInode = new Inode(file, superblock, groupDesc, 1);
+        rootInode = new Inode(file, superblock, groupDesc, 2);
 
     }
 

@@ -19,6 +19,7 @@ public class DirectoryEntry {
     public DirectoryEntry(ByteBuffer buffer, RandomAccessFile file, Superblock superblock, GroupDesc groupDesc) throws IOException {
 
         // See specification of directory for clarity on chosen byte values
+        System.out.println(buffer.getInt(0));
         inode = new Inode(file, superblock, groupDesc, buffer.getInt(0));
         length  = buffer.getShort(4);
         nameLen = buffer.get(6);

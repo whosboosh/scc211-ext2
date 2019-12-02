@@ -28,6 +28,8 @@ public class Ext2File {
                 System.out.println(directoryEntries[k].print()+" ");
                 if (directoryEntries[k].getFileName().equals(paths[i])) {
                     Helper.dumpHexBytes(directoryEntries[k].getBuffer());
+                    System.out.println("------------");
+                    Helper.dumpHexBytes(directoryEntries[k].getInode().getBuffer());
                     System.out.println(Arrays.toString(directoryEntries[k].getInode().getPointers()));
 
                     // Traverse to this directory by setting the directory entries array

@@ -33,7 +33,7 @@ public class Inode {
 
         // To seek to the chosen inode we just have to times the inodeNumber by 128 and add on the value
         // of the position of the first inode.
-        buffer = Helper.wrap(inodeSize, file, ((inodeNumber)*inodeSize)+(1024*inodePointer));
+        buffer = Helper.wrap(inodeSize, file, ((inodeNumber-1)*inodeSize)+(1024*inodePointer));
 
         fileMode = buffer.getShort(0);
         userID = buffer.getShort(2);
