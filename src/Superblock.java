@@ -7,6 +7,7 @@ public class Superblock {
     private short magicNumber;
     private int numBlocks;
     private int inodeSize;
+    private int numInodesPerGroup;
     private ByteBuffer volumeLabel;
 
     public Superblock(RandomAccessFile file) throws IOException {
@@ -15,6 +16,7 @@ public class Superblock {
 
         magicNumber = buffer.getShort(56);
         numBlocks = buffer.getInt(32);
+        numInodesPerGroup = buffer.getInt(40);
         inodeSize = buffer.getInt(88);
         byte[] labelBuffer = buffer.array();
         volumeLabel = buffer.get(labelBuffer, 120, 16);
@@ -27,6 +29,8 @@ public class Superblock {
     public int getNumBlocks() {
         return numBlocks;
     }
+
+    public int getNumInodesPerGroup() { return numInodesPerGroup; }
 
     public int getInodeSize() {
         return inodeSize;

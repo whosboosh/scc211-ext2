@@ -21,16 +21,18 @@ public class Ext2File {
 
         for (int i = 1; i < paths.length; i++) {
 
-            System.out.println(paths[i]);
+            System.out.println(paths[i]+" Directory entries: "+directoryEntries.length);
 
             for (int k = 0; k < directoryEntries.length; k++) {
 
                 System.out.println(directoryEntries[k].print()+" ");
+
                 if (directoryEntries[k].getFileName().equals(paths[i])) {
-                    Helper.dumpHexBytes(directoryEntries[k].getBuffer());
-                    System.out.println("------------");
                     Helper.dumpHexBytes(directoryEntries[k].getInode().getBuffer());
-                    System.out.println(Arrays.toString(directoryEntries[k].getInode().getPointers()));
+                    System.out.println("Inode value: "+directoryEntries[k].getInodeValue());
+                    System.out.println("Now getting new directory using inode pointer: "+Arrays.toString(directoryEntries[k].getInode().getPointers()));
+                    System.out.println("------------");
+                    Helper.dumpHexBytes(directoryEntries[k].getDataBlock().getBuffer());
 
                     // Traverse to this directory by setting the directory entries array
                     // to the new directory

@@ -20,7 +20,7 @@ public class Volume extends RandomAccessFile {
         BlockGroup blockGroup = new BlockGroup(this);
 
         // Read root directory
-        root = new Directory(blockGroup.getRootInode().getPointers()[0], blockGroup.getRootInode().getFileSize(), this, blockGroup.getSuperblock(), blockGroup.getGroupDesc());
+        root = new Directory(blockGroup.getRootInode().getPointers(), blockGroup.getRootInode().getFileSize(), this, blockGroup.getSuperblock(), blockGroup.getGroupDesc());
     }
 
     public Directory getRoot() {

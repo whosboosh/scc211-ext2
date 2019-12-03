@@ -22,18 +22,21 @@ public class Inode {
 
     public Inode(RandomAccessFile file, Superblock superblock, GroupDesc groupDesc, int inodeNumber) throws IOException {
 
-        // Inode Pointer references the start of the inode table
-        int inodePointer = groupDesc.getInodeTablePointer();
+        int inodesPerGroup = superblock.getNumInodesPerGroup();
 
         // = 128 bytes
         int inodeSize = superblock.getInodeSize();
 
-        // Debugging...
-        System.out.println("Inode Size: "+((inodeNumber)));
+        int blockGroup = (inodeNumber - 1) / inodesPerGroup;
+
+        // Inode Pointer references the start of the inode table
+        int inodePointer = groupDesc.getInodeTablePointer();
+
+        int inodeIndex = ((inodeNumber-1) % inodesPerGroup);
 
         // To seek to the chosen inode we just have to times the inodeNumber by 128 and add on the value
         // of the position of the first inode.
-        buffer = Helper.wrap(inodeSize, file, ((inodeNumber-1)*inodeSize)+(1024*inodePointer));
+        buffer = Helper.wrap(inodeSize, file, ((inodeIndex * inodeSize) + (1024*inodePointer)));
 
         fileMode = buffer.getShort(0);
         userID = buffer.getShort(2);

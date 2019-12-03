@@ -11,29 +11,52 @@ public class Directory {
     private List<DirectoryEntry> directoryEntries = new ArrayList<>();
     private ByteBuffer buffer;
 
-    public Directory(int pointer, long directoryLength, RandomAccessFile file, Superblock superblock, GroupDesc groupDesc) throws IOException {
+    public Directory(int[] pointers, long directoryLength, RandomAccessFile file, Superblock superblock, GroupDesc groupDesc) throws IOException {
 
-        // Inital buffer contains 1024 bytes, gets the location using pointer which is
-        // the first value of the soecificed inode pointers byte array. Each block is 1024 bytes
-        // So we can seek pointer * 1024
-        buffer = Helper.wrap(1024, file, pointer * 1024);
-
-        // directoryLength is the specified inode filesize
-        // Traverse the directory file by file adding the length from each file
-        // The next file starts at the end the previous file... Last file is padded with 0's
-        int ptr = 0;
-        while (ptr < directoryLength) {
-
-            // Create a new buffer of size 1024 bytes, seek to the existing pointer + value of ptr
-            // which is the value of length from the file (directoryEntry).
-            ByteBuffer buf = Helper.wrap(1024, file, (pointer*1024)+ptr);
-
-            DirectoryEntry directoryEntry = new DirectoryEntry(buf, file, superblock, groupDesc);
-
-            ptr+=(directoryEntry.getLength());
-
-            directoryEntries.add(directoryEntry);
+        // Combine buffer from pointers
+        // Find how many pointers we have and add the data together
+        int i = 0;
+        while (pointers[i] != 0) {
+            i++;
         }
+
+        //This will be the combined byte array
+        byte[] byteBuffer = new byte[1024*i];
+
+        // Loop amount of pointers there are
+        for (int k = 0; k < i; k++) {
+
+            // Create buffer from first pointer
+            byte[] partialData = Helper.wrap(1024, file, pointers[k] * 1024).array();
+
+            // Loop over overall buffer, append new data
+            for (int l = k*1024; l < partialData.length+(k*1024); l++) {
+
+                byteBuffer[l] = partialData[l-(k*1024)];
+
+            }
+
+            // Create directory entries
+            // directoryLength is the specified inode filesize
+            // Traverse the directory file by file adding the length from each file
+            // The next file starts at the end the previous file... Last file is padded with 0's
+            int ptr = 0;
+            while (ptr < directoryLength) {
+
+                // Create a new buffer of size 1024 bytes, seek to the existing pointer + value of ptr
+                // which is the value of length from the file (directoryEntry).
+                ByteBuffer buf = Helper.wrap(1024, file, (pointers[k]*1024)+ptr);
+
+                DirectoryEntry directoryEntry = new DirectoryEntry(buf, file, superblock, groupDesc);
+
+                ptr+=(directoryEntry.getLength());
+
+                directoryEntries.add(directoryEntry);
+            }
+
+        }
+
+        buffer = Helper.wrap(byteBuffer);
 
     }
 
