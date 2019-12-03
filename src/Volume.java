@@ -7,7 +7,9 @@ import java.util.Arrays;
 
 public class Volume extends RandomAccessFile {
 
+    private Inode rootInode;
     private Directory root;
+    private BlockGroup[] blockGroups;
 
     public Volume(String path) throws IOException {
 
@@ -17,11 +19,31 @@ public class Volume extends RandomAccessFile {
 
     public void initialise() throws IOException {
 
-        BlockGroup blockGroup = new BlockGroup(this);
+        BlockGroup blockGroup = new BlockGroup(this, 0);
+
+        // Get total number of blocks
+        int totalBlocks = blockGroup.getSuperblock().getTotalBlocks();
+
+        // Initialse the blockgroups array with total size
+        blockGroups = new BlockGroup[totalBlocks];
+
+        // Create block groups
+        int i = 0;
+        while (i < totalBlocks) {
+            blockGroups[i] = new BlockGroup(this, i);
+            i++;
+        }
+
+        // Create root inode
+        rootInode = new Inode(this, blockGroup.getSuperblock(), blockGroup.getGroupDesc(), 2);
 
         // Read root directory
-        root = new Directory(blockGroup.getRootInode().getPointers(), blockGroup.getRootInode().getFileSize(), this, blockGroup.getSuperblock(), blockGroup.getGroupDesc());
+        root = new Directory(rootInode.getPointers(), rootInode.getFileSize(), this, blockGroup.getSuperblock(), blockGroups);
     }
+
+    public BlockGroup[] getBlockGroups() { return blockGroups; }
+
+    public Inode getRootInode() { return rootInode; }
 
     public Directory getRoot() {
         return root;

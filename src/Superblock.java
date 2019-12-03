@@ -5,7 +5,8 @@ import java.nio.ByteBuffer;
 public class Superblock {
 
     private short magicNumber;
-    private int numBlocks;
+    private int totalBlocks;
+    private int numBlocksPerGroup;
     private int inodeSize;
     private int numInodesPerGroup;
     private ByteBuffer volumeLabel;
@@ -15,7 +16,8 @@ public class Superblock {
         ByteBuffer buffer = Helper.wrap(1024, file, 1024);
 
         magicNumber = buffer.getShort(56);
-        numBlocks = buffer.getInt(32);
+        totalBlocks = buffer.getInt(4);
+        numBlocksPerGroup = buffer.getInt(32);
         numInodesPerGroup = buffer.getInt(40);
         inodeSize = buffer.getInt(88);
         byte[] labelBuffer = buffer.array();
@@ -26,8 +28,10 @@ public class Superblock {
         return magicNumber;
     }
 
-    public int getNumBlocks() {
-        return numBlocks;
+    public int getTotalBlocks() { return totalBlocks; }
+
+    public int getNumBlocksPerGroup() {
+        return numBlocksPerGroup;
     }
 
     public int getNumInodesPerGroup() { return numInodesPerGroup; }

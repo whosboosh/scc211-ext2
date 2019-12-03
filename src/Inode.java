@@ -27,8 +27,6 @@ public class Inode {
         // = 128 bytes
         int inodeSize = superblock.getInodeSize();
 
-        int blockGroup = (inodeNumber - 1) / inodesPerGroup;
-
         // Inode Pointer references the start of the inode table
         int inodePointer = groupDesc.getInodeTablePointer();
 

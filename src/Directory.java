@@ -11,7 +11,7 @@ public class Directory {
     private List<DirectoryEntry> directoryEntries = new ArrayList<>();
     private ByteBuffer buffer;
 
-    public Directory(int[] pointers, long directoryLength, RandomAccessFile file, Superblock superblock, GroupDesc groupDesc) throws IOException {
+    public Directory(int[] pointers, long directoryLength, RandomAccessFile file, Superblock superblock, BlockGroup[] blockGroups) throws IOException {
 
         // Combine buffer from pointers
         // Find how many pointers we have and add the data together
@@ -47,7 +47,7 @@ public class Directory {
                 // which is the value of length from the file (directoryEntry).
                 ByteBuffer buf = Helper.wrap(1024, file, (pointers[k]*1024)+ptr);
 
-                DirectoryEntry directoryEntry = new DirectoryEntry(buf, file, superblock, groupDesc);
+                DirectoryEntry directoryEntry = new DirectoryEntry(buf, file, superblock, blockGroups);
 
                 ptr+=(directoryEntry.getLength());
 

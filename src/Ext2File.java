@@ -28,11 +28,10 @@ public class Ext2File {
                 System.out.println(directoryEntries[k].print()+" ");
 
                 if (directoryEntries[k].getFileName().equals(paths[i])) {
-                    Helper.dumpHexBytes(directoryEntries[k].getInode().getBuffer());
+                    //Helper.dumpHexBytes(directoryEntries[k].getInode().getBuffer());
                     System.out.println("Inode value: "+directoryEntries[k].getInodeValue());
-                    System.out.println("Now getting new directory using inode pointer: "+Arrays.toString(directoryEntries[k].getInode().getPointers()));
-                    System.out.println("------------");
-                    Helper.dumpHexBytes(directoryEntries[k].getDataBlock().getBuffer());
+                    System.out.println("Now getting new directory using data pointer: "+Arrays.toString(directoryEntries[k].getInode().getPointers()));
+                    //Helper.dumpHexBytes(directoryEntries[k].getDataBlock().getBuffer());
 
                     // Traverse to this directory by setting the directory entries array
                     // to the new directory
@@ -44,7 +43,6 @@ public class Ext2File {
             }
 
             System.out.println("------------------------");
-            i++;
         }
 
     }

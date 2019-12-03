@@ -13,13 +13,17 @@ public class DirectoryEntry {
     private byte fileType;
     private byte[] fileName;
     private Superblock superblock;
-    private GroupDesc groupDesc;
+    private BlockGroup[] blockGroups;
     private ByteBuffer buffer;
 
-    public DirectoryEntry(ByteBuffer buffer, RandomAccessFile file, Superblock superblock, GroupDesc groupDesc) throws IOException {
+    public DirectoryEntry(ByteBuffer buffer, RandomAccessFile file, Superblock superblock, BlockGroup[] blockGroups) throws IOException {
+
+        int index = (buffer.getInt(0) - 1) / superblock.getNumInodesPerGroup();
+
+        System.out.println("Inode pointer: "+buffer.getInt(0)+ ", Index: "+index);
 
         // See specification of directory for clarity on chosen byte values
-        inode = new Inode(file, superblock, groupDesc, buffer.getInt(0));
+        inode = new Inode(file, superblock, blockGroups[index].getGroupDesc(), buffer.getInt(0));
         length  = buffer.getShort(4);
         nameLen = buffer.get(6);
         fileType = buffer.get(7);
@@ -31,12 +35,11 @@ public class DirectoryEntry {
         this.buffer = buffer;
         this.file = file;
         this.superblock = superblock;
-        this.groupDesc = groupDesc;
-
+        this.blockGroups = blockGroups;
     }
 
     public Directory getDataBlock() throws IOException {
-        return new Directory(inode.getPointers(), inode.getFileSize(), file, superblock, groupDesc);
+        return new Directory(inode.getPointers(), inode.getFileSize(), file, superblock, blockGroups);
     }
 
     public String print() {
