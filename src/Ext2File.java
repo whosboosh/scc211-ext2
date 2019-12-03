@@ -39,7 +39,7 @@ public class Ext2File {
                     if (directoryEntries[k].isFileDirectory()) {
                         directoryEntries = directoryEntries[k].getDataDirectory().getFileInfo();
                     } else {
-                        Helper.dumpHexBytes(directoryEntries[k].getDataFile().getBuffer());
+                        System.out.println(directoryEntries[k].getDataFile().getData());
                     }
                     break;
                 }
