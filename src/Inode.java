@@ -47,7 +47,6 @@ public class Inode {
         numHardLinks = buffer.getShort(26);
 
         // Pointers contain references to the datablocks which we can use to
-        // create other directory objects
         for (int i = 0; i < 12; i++) {
             pointers[i] = buffer.getInt((i*4)+40);
         }

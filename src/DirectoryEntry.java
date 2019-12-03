@@ -20,8 +20,6 @@ public class DirectoryEntry {
 
         int index = (buffer.getInt(0) - 1) / superblock.getNumInodesPerGroup();
 
-        System.out.println("Inode pointer: "+buffer.getInt(0)+ ", Index: "+index);
-
         // See specification of directory for clarity on chosen byte values
         inode = new Inode(file, superblock, blockGroups[index].getGroupDesc(), buffer.getInt(0));
         length  = buffer.getShort(4);

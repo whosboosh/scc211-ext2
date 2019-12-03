@@ -5,7 +5,9 @@ public class Driver {
     public static void main(String args[]) {
         try {
             Volume volume = new Volume("resources/ext2fs");
-            Ext2File file = new Ext2File(volume,"/deep/down/in/the/filesystem/there/lived/a/file");
+            System.out.println(volume.getBlockGroups()[0].getSuperblock().getSuperBlockInformation());
+            Ext2File file = new Ext2File(volume,"/files");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
