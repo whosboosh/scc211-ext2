@@ -36,7 +36,11 @@ public class Ext2File {
                     // Traverse to this directory by setting the directory entries array
                     // to the new directory
                     //Helper.dumpHexBytes(directoryEntries[k].getDataBlock().getBuffer());
-                    directoryEntries = directoryEntries[k].getDataBlock().getFileInfo();
+                    if (directoryEntries[k].isFileDirectory()) {
+                        directoryEntries = directoryEntries[k].getDataDirectory().getFileInfo();
+                    } else {
+                        Helper.dumpHexBytes(directoryEntries[k].getDataFile().getBuffer());
+                    }
                     break;
                 }
 

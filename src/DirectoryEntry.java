@@ -38,8 +38,17 @@ public class DirectoryEntry {
         this.blockGroups = blockGroups;
     }
 
-    public Directory getDataBlock() throws IOException {
+    public Directory getDataDirectory() throws IOException {
         return new Directory(inode.getPointers(), inode.getFileSize(), file, superblock, blockGroups);
+    }
+
+    public File getDataFile() throws IOException {
+        return new File(inode.getPointers(), file);
+    }
+
+    public boolean isFileDirectory() {
+        int fileMode = (inode.getFileMode() & 0x4000);
+        return fileMode == 16384;
     }
 
     public String print() {

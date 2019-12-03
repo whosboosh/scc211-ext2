@@ -13,33 +13,16 @@ public class Directory {
 
     public Directory(int[] pointers, long directoryLength, RandomAccessFile file, Superblock superblock, BlockGroup[] blockGroups) throws IOException {
 
-        // Combine buffer from pointers
-        // Find how many pointers we have and add the data together
+        buffer = Helper.combinePointers(pointers, file);
+
         int i = 0;
         while (pointers[i] != 0) {
             i++;
         }
 
-        //This will be the combined byte array
-        byte[] byteBuffer = new byte[1024*i];
-
-        // Loop amount of pointers there are
+        // Loop over each pointer
         for (int k = 0; k < i; k++) {
-
-            // Create buffer from first pointer
-            byte[] partialData = Helper.wrap(1024, file, pointers[k] * 1024).array();
-
-            // Loop over overall buffer, append new data
-            for (int l = k*1024; l < partialData.length+(k*1024); l++) {
-
-                byteBuffer[l] = partialData[l-(k*1024)];
-
-            }
-
             // Create directory entries
-            // directoryLength is the specified inode filesize
-            // Traverse the directory file by file adding the length from each file
-            // The next file starts at the end the previous file... Last file is padded with 0's
             int ptr = 0;
             while (ptr < directoryLength) {
 
@@ -53,10 +36,7 @@ public class Directory {
 
                 directoryEntries.add(directoryEntry);
             }
-
         }
-
-        buffer = Helper.wrap(byteBuffer);
 
     }
 

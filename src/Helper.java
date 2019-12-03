@@ -19,6 +19,35 @@ public class Helper {
         return wrap(bytes);
     }
 
+    public static ByteBuffer combinePointers(int[] pointers, RandomAccessFile file) throws IOException {
+        // Combine buffer from pointers
+        // Find how many pointers we have and add the data together
+        int i = 0;
+        while (pointers[i] != 0) {
+            i++;
+        }
+
+        //This will be the combined byte array
+        byte[] byteBuffer = new byte[1024*i];
+
+        // Loop amount of pointers there are
+        for (int k = 0; k < i; k++) {
+
+            // Create buffer from first pointer
+            byte[] partialData = Helper.wrap(1024, file, pointers[k] * 1024).array();
+
+            // Loop over overall buffer, append new data
+            for (int l = k * 1024; l < partialData.length + (k * 1024); l++) {
+
+                byteBuffer[l] = partialData[l - (k * 1024)];
+
+            }
+
+        }
+
+        return Helper.wrap(byteBuffer);
+    }
+
     public static void dumpHexBytes(byte[] bytes) {
         for (int i = 0; i < bytes.length / 16; i++) {
             for (int k = 0; k < 32; k++) {
