@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 public class Ext2File {
 
-    private byte[] bytes;
-    private int size;
-    private int position;
+    private byte[] buffer;
+    public static int size;
+    public static int position;
 
     public Ext2File(Volume volume, String path) throws IOException {
         // Takes volume and the path, now recursively traverse volume to find the file
@@ -19,56 +19,63 @@ public class Ext2File {
 
         DirectoryEntry[] directoryEntries = root.getFileInfo();
 
-        int currentPath = 1;
-        for (int i = 1; i < paths.length; i++) {
+        System.out.println("-------------- Looking for file: "+path+" --------------");
 
-            System.out.println(paths[currentPath]+" Directory entries: "+directoryEntries.length);
+        // Create the buffer from the size of the file.
+        // We first have to traverse the file-system until we find the file specified.
+
+        // Offset the index by 1 because split causes the first entry to be blank
+        for (int i = 1; i < paths.length; i++) { // Two loops for /big-dir/55
 
             for (int k = 0; k < directoryEntries.length; k++) {
 
-                System.out.println(directoryEntries[k].print()+" ");
+                //System.out.println(directoryEntries[k].print());
 
-                if (directoryEntries[k].getFileName().equals(paths[currentPath])) {
-                    System.out.println("Inode value: "+directoryEntries[k].getInodeValue());
-                    System.out.println("Now getting new directory using data pointer: "+Arrays.toString(directoryEntries[k].getInode().getPointers()));
+                if (directoryEntries[k].getFileName().equals(paths[i])) {
+                    // We found the folder / file in the directory
 
-                    // Traverse to this directory by setting the directory entries array
-                    // to the new directory
+                    // Determine if the file is a folder or file
                     if (directoryEntries[k].isFileDirectory()) {
+                        // Directory
                         directoryEntries = directoryEntries[k].getDataDirectory().getFileInfo();
-                        i = 1;
                     } else {
-                        System.out.println(directoryEntries[k].getDataFile().getData());
+                        // File
+                        if (i == paths.length-1) { // last iteration
+                            System.out.println("File found: "+ path +". Loading data into buffer");
+                        }
+                        buffer = directoryEntries[k].getDataFile().getBuffer();
+                        // Now that buffer is filled, set the size attribute equal to length
+                        size = buffer.length;
                     }
                     break;
                 }
-
             }
-            currentPath++;
-            System.out.println("------------------------");
+
         }
 
     }
 
-    /*
-    public byte[] read(long startByte, long length) {
 
+    public byte[] read(long startByte, long length) {
+        byte[] data = new byte[(int)length-(int)startByte];
+        for (long i = startByte; i < length; i++) {
+            data[(int)i-(int)startByte] = buffer[(int)i];
+        }
+
+        return data;
     }
 
-    public byte[] read(long length) {
 
+    public byte[] read(long length) {
+        byte[] data = new byte[size-position];
+        for(int i = position; i < length+position; i++) {
+            data[i-position] = buffer[i];
+        }
+
+        return data;
     }
 
     public void seek(long position) {
-
+        this.position = (int)position;
     }
-
-    public int position() {
-        return position;
-    }
-
-    public int size() {
-
-    }
-    */
 }
