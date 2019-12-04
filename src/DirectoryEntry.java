@@ -45,13 +45,36 @@ public class DirectoryEntry {
     }
 
     public boolean isFileDirectory() {
-        int fileMode = (inode.getFileMode() & 0x4000);
-        return fileMode == 16384;
+        return (inode.getFileMode() & 0x4000) > 0;
     }
 
     public String print() {
+
+        boolean directory = (inode.getFileMode() & 0x4000) > 0;
+        boolean file = (inode.getFileMode() & 0x8000) > 0;
+        boolean userRead = (inode.getFileMode() & 0x0100) > 0;
+        boolean userWrite = (inode.getFileMode() & 0x0080) > 0;
+        boolean userExecute = (inode.getFileMode() & 0x0040) > 0;
+        boolean groupRead = (inode.getFileMode() & 0x0020) > 0;
+        boolean groupWrite = (inode.getFileMode() & 0x0010) > 0;
+        boolean groupExecute = (inode.getFileMode() & 0x0008) > 0;
+        boolean otherRead = (inode.getFileMode() & 0x0004) > 0;
+        boolean otherWrite = (inode.getFileMode() & 0x0002) > 0;
+        boolean otherExecute = (inode.getFileMode() & 0x0001) > 0;
+
+        String permissions = directory ? "d" : "-";
+        permissions+= userRead ? "r" : "-";
+        permissions+= userWrite ? "w" : "-";
+        permissions+= userExecute ? "x" : "-";
+        permissions+= groupRead ? "r" : "-";
+        permissions+= groupWrite ? "w" : "-";
+        permissions+= groupExecute ? "x" : "-";
+        permissions+= otherRead ? "r" : "-";
+        permissions+= otherWrite ? "w" : "-";
+        permissions+= otherExecute ? "x " : "- ";
+
         String outputString;
-        outputString = getInode().getNumHardLinks() + " " + getInode().getUserID() + " " + getInode().getGroupID() + " " + getLength() + " "+ new Date(getInode().getCreationTime()) + " ";
+        outputString = permissions + getInode().getNumHardLinks() + " " + getInode().getUserID() + " " + getInode().getGroupID() + " " + getLength() + " "+ new Date(getInode().getCreationTime()) + " ";
 
         outputString = outputString + getFileName();
         return outputString;
