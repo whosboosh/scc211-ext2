@@ -15,16 +15,20 @@ public class File {
     // Get the data out of the buffer by creating new array based on data not being 0
     public String getData() {
         byte[] buf = buffer.array();
-        int i = 0;
-        while (buf[i] != 0) {
-            i++;
-        }
 
-        byte[] data = new byte[i];
-        for (int k = 0; k < i; k++) {
-            data[k] = buf[k];
+        if (buf.length != 0) {
+            int i = 0;
+            while (buf[i] != 0) {
+                i++;
+            }
+
+            byte[] data = new byte[i];
+            for (int k = 0; k < i; k++) {
+                data[k] = buf[k];
+            }
+            return new String(data);
         }
-        return new String(data);
+        return "No data found";
     }
 
     public byte[] getBuffer() {

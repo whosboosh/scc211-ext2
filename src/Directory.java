@@ -20,10 +20,10 @@ public class Directory {
             i++;
         }
 
+        int ptr = 0;
         // Loop over each pointer
         for (int k = 0; k < i; k++) {
             // Create directory entries
-            int ptr = 0;
             while (ptr < directoryLength) {
 
                 // Create a new buffer of size 1024 bytes, seek to the existing pointer + value of ptr
