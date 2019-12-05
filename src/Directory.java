@@ -11,12 +11,14 @@ public class Directory {
     private List<DirectoryEntry> directoryEntries = new ArrayList<>();
     private ByteBuffer buffer;
 
-    public Directory(int[] pointers, long directoryLength, RandomAccessFile file, Superblock superblock, BlockGroup[] blockGroups) throws IOException {
+    public Directory(Inode inode, RandomAccessFile file, Superblock superblock, BlockGroup[] blockGroups) throws IOException {
 
-        buffer = Helper.combinePointers(pointers, file);
+        long directoryLength = inode.getFileSize();
+
+        buffer = Helper.combinePointers(inode, file);
 
         int i = 0;
-        while (pointers[i] != 0) {
+        while (inode.getPointers()[i] != 0) {
             i++;
         }
 
@@ -28,7 +30,7 @@ public class Directory {
 
                 // Create a new buffer of size 1024 bytes, seek to the existing pointer + value of ptr
                 // which is the value of length from the file (directoryEntry).
-                ByteBuffer buf = Helper.wrap(1024, file, (pointers[k]*1024)+ptr);
+                ByteBuffer buf = Helper.wrap(1024, file, (inode.getPointers()[k]*1024)+ptr);
 
                 DirectoryEntry directoryEntry = new DirectoryEntry(buf, file, superblock, blockGroups);
 

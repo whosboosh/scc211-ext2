@@ -38,7 +38,7 @@ public class Volume extends RandomAccessFile {
         rootInode = new Inode(this, blockGroup.getSuperblock(), blockGroup.getGroupDesc(), 2);
 
         // Read root directory
-        root = new Directory(rootInode.getPointers(), rootInode.getFileSize(), this, blockGroup.getSuperblock(), blockGroups);
+        root = new Directory(rootInode, this, blockGroup.getSuperblock(), blockGroups);
     }
 
     public BlockGroup[] getBlockGroups() { return blockGroups; }

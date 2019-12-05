@@ -37,11 +37,11 @@ public class DirectoryEntry {
     }
 
     public Directory getDataDirectory() throws IOException {
-        return new Directory(inode.getPointers(), inode.getFileSize(), file, superblock, blockGroups);
+        return new Directory(inode, file, superblock, blockGroups);
     }
 
     public File getDataFile() throws IOException {
-        return new File(inode.getPointers(), file);
+        return new File(inode, file);
     }
 
     public boolean isFileDirectory() {

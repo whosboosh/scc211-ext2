@@ -102,6 +102,10 @@ public class Inode {
         return indirectPointer;
     }
 
+    public int getDoubleIndirect() {
+        return doubleIndirect;
+    }
+
     public int getTripleIndirect() {
         return tripleIndirect;
     }

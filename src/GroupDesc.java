@@ -21,6 +21,10 @@ public class GroupDesc {
         inodeTablePointer = buffer.getInt(8);
     }
 
+    public String getGroupDescriptorInformation() {
+        return ("---------------------\nGROUP DESCRIPTOR INFORMATION\nInode Table Pointer : "+getInodeTablePointer()+"\n---------------------");
+    }
+
     public int getInodeTablePointer() {
         return inodeTablePointer;
     }

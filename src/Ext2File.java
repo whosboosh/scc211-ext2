@@ -29,7 +29,7 @@ public class Ext2File {
 
             for (int k = 0; k < directoryEntries.length; k++) {
 
-                //System.out.println(directoryEntries[k].print());
+                System.out.println(directoryEntries[k].print());
 
                 if (directoryEntries[k].getFileName().equals(paths[i])) {
                     // We found the folder / file in the directory
@@ -56,17 +56,17 @@ public class Ext2File {
     }
 
 
-    public byte[] read(long startByte, long length) {
-        byte[] data = new byte[(int)length-(int)startByte];
-        for (long i = startByte; i < length; i++) {
-            data[(int)i-(int)startByte] = buffer[(int)i];
+    public byte[] read(int startByte, int length) {
+        byte[] data = new byte[length-startByte];
+        for (int i = startByte; i < length; i++) {
+            data[i-startByte] = buffer[i];
         }
 
         return data;
     }
 
 
-    public byte[] read(long length) {
+    public byte[] read(int length) {
         byte[] data = new byte[size-position];
         for(int i = position; i < length+position; i++) {
             data[i-position] = buffer[i];
@@ -75,7 +75,7 @@ public class Ext2File {
         return data;
     }
 
-    public void seek(long position) {
-        this.position = (int)position;
+    public void seek(int position) {
+        this.position = position;
     }
 }
