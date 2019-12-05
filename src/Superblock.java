@@ -54,6 +54,6 @@ public class Superblock {
     public String getSuperBlockInformation() {
         return ("---------------------\nSUPERBLOCK INFORMATION\nMagic Number: "+getMagicNumber()+"\nTotal Inodes: "+getTotalInodes()+"\nTotal Blocks: "+getTotalBlocks()
                 +"\nNumber blocks per Group: "+getNumBlocksPerGroup()+"\nNumber inodes per Group: "+getNumInodesPerGroup()
-                +"\nSize of inode: "+getInodeSize()+"\nVolume Label: "+getVolumeLabel()+"\n---------------------");
+                +"\nSize of inode: "+getInodeSize()+"\nVolume Label: "+getVolumeLabel());
     }
 }

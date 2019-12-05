@@ -7,9 +7,9 @@ public class Driver {
         try {
             Volume volume = new Volume("resources/ext2fs");
             System.out.println(volume.getBlockGroups()[0].getSuperblock().getSuperBlockInformation());
-            System.out.println(volume.getBlockGroups()[0].getGroupDesc().getGroupDescriptorInformation());
-            Ext2File file = new Ext2File(volume,"/files/trpl-ind-e");
+            Ext2File file = new Ext2File(volume,"/deep/down/in/asd");
 
+            file.printFullPath();
 
             byte[] buf = file.read(0, file.size);
             System.out.format ("%s\n", new String(buf));

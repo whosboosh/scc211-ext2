@@ -41,6 +41,8 @@ public class DirectoryEntry {
     }
 
     public File getDataFile() throws IOException {
+        int index = (buffer.getInt(0) - 1) / superblock.getNumInodesPerGroup();
+        System.out.println(blockGroups[index].getGroupDesc().getGroupDescriptorInformation());
         return new File(inode, file);
     }
 
