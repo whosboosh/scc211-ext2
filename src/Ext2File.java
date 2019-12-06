@@ -57,21 +57,10 @@ public class Ext2File {
 
     }
 
-    public DirectoryEntry[] listDirectory(Directory directory, String path) {
-        String[] paths = path.split("/");
-
-        DirectoryEntry[] directoryEntries = directory.getFileInfo();
-
-        for (int i = 1; i < paths.length; i++) {
-
-            for (int k = 0; k < directoryEntries.length; k++) {
-
-            }
-        }
-
-        return directoryEntries;
-    }
-
+    /**
+     * Prints the files and folders of each directory until reaching the specified path
+     * @throws IOException
+     */
     public void printFullPath() throws IOException {
         String[] temp = path.split("/");
 

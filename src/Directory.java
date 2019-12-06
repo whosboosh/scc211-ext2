@@ -18,7 +18,7 @@ public class Directory {
         buffer = Helper.combinePointers(inode, file);
 
         int i = 0;
-        while (inode.getPointers()[i] != 0) {
+        while (inode.getPointers()[i] != 0 && i < inode.getPointers().length-1) {
             i++;
         }
 

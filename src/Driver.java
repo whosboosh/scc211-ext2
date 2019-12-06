@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Driver {
 
@@ -7,12 +8,45 @@ public class Driver {
         try {
             Volume volume = new Volume("resources/ext2fs");
             System.out.println(volume.getBlockGroups()[0].getSuperblock().getSuperBlockInformation());
-            Ext2File file = new Ext2File(volume,"/deep/down/in/the/filesystem");
+            Ext2File file = new Ext2File(volume,"/");
 
             file.printFullPath();
 
             byte[] buf = file.read(0, file.size);
             System.out.format ("%s\n", new String(buf));
+
+            Shell shell = new Shell(volume);
+            Scanner scanner = new Scanner(System.in);
+
+            // Loop this for continuous user input
+            System.out.println("Welcome to SCC 211 Ext2 File System Driver Shell, type 'exit' to close");
+            String path = "";
+            while (true) {
+                String shellEntry = ":"+path+"$";
+                System.out.print(volume.getBlockGroups()[0].getSuperblock().getVolumeLabel()+shellEntry);
+                String input = scanner.nextLine();
+
+                String[] commands = input.split(" ");
+
+                if (commands[0].equals("cd")) {
+                    if (commands.length != 2) continue;
+                    path = shell.cd(commands[1]);
+                }
+
+                if (commands[0].equals("ls")) {
+                    shell.ls();
+                }
+
+                if (commands[0].equals("cat")) {
+                    if (commands.length != 2) continue;
+                    shell.cat(commands[1]);
+                }
+
+                if (input.equals("exit")) {
+                    break;
+                }
+            }
+
 
             /*
             file.seek(10);
