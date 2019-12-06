@@ -97,15 +97,15 @@ public class Helper {
     public static byte[] getIndirectData(int pointer, Inode inode, RandomAccessFile file) throws IOException {
         byte[] indirectData = new byte[0];
         if (pointer != 0) {
-            ArrayList<Integer> buffer = reducePointers(pointer, file);
-            int count = buffer.size();
+            ByteBuffer buffer = Helper.wrap(1024, file, pointer*1024);
+            int count = buffer.array().length;
 
             // Data to return, each block of data is 1024 bytes
             indirectData = new byte[(int)inode.getFileSize()];
 
             // Create the partial buffers for each pointer
             for (int k = 0; k < count; k++) {
-                byte[] temp = Helper.wrap(1024, file, buffer.get(k)*1024).array();
+                byte[] temp = Helper.wrap(1024, file, buffer.getInt(k)*1024).array();
                 System.arraycopy(temp, 0, indirectData, k*1024 , temp.length);
             }
 

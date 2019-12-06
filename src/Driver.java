@@ -8,7 +8,7 @@ public class Driver {
         try {
             Volume volume = new Volume("resources/ext2fs");
             System.out.println(volume.getBlockGroups()[0].getSuperblock().getSuperBlockInformation());
-            Ext2File file = new Ext2File(volume,"/files/dbl-ind-e");
+            Ext2File file = new Ext2File(volume,"/");
 
             byte[] buf = file.read(0, file.size);
             System.out.format ("%s\n", new String(buf));
@@ -29,6 +29,11 @@ public class Driver {
                 if (commands[0].equals("cd")) {
                     if (commands.length != 2) continue;
                     path = shell.cd(commands[1]);
+                }
+
+                if (commands[0].equals("hex")) {
+                    if (commands.length != 2) continue;
+                    shell.hex(commands[1]);
                 }
 
                 if (commands[0].equals("ls")) {

@@ -6,7 +6,6 @@ import java.util.List;
 public class Shell {
 
     private DirectoryEntry[] currentDirectory; // The current working directory
-    private DirectoryEntry[] returnDirectory; // Return value of searching for correct directory given path
     private DirectoryEntry[] rootDirectory; // Keep reference to root to search absolute
     private String currentPath;
 
@@ -30,13 +29,24 @@ public class Shell {
     }
 
     /**
+     * Dump hex bytes of file or folder
+     * @param path
+     */
+    public void hex(String path) throws IOException {
+        byte[] buffer = setWorkingDirectory(path, false);
+
+        // Call Helper hexDump method on bytes
+        Helper.dumpHexBytes(buffer);
+    }
+
+    /**
      * Prints the contents of the buffer returned from setWorkingDirectory method
      * @param path path of the file the user is accessing
      * @throws IOException
      */
     public void cat(String path) throws IOException {
 
-        byte[] buffer = setWorkingDirectory(path);
+        byte[] buffer = setWorkingDirectory(path, false);
 
         // Print the buffer!
         System.out.format ("%s\n", new String(buffer));
@@ -51,15 +61,13 @@ public class Shell {
     public String cd(String path) throws IOException {
 
 
-        if (setWorkingDirectory(path).length == 0) {
+        if (setWorkingDirectory(path, true).length == 0) {
             if (currentPath == null) {
                 return "/";
             }
         } else {
             currentPath = formatCurrentPath(splitPath(path));
         }
-
-        this.currentDirectory = returnDirectory;
 
         return currentPath;
     }
@@ -92,10 +100,11 @@ public class Shell {
      * @return byte[] of the data at the path or 0 if not found or directory
      * @throws IOException
      */
-    public byte[] setWorkingDirectory(String path) throws IOException {
+    public byte[] setWorkingDirectory(String path, boolean setDirectory) throws IOException {
         // The buffer the data will be saved to
         byte[] buffer = new byte[1];
 
+        DirectoryEntry[] workingDirectory = currentDirectory;
         DirectoryEntry[] backup = currentDirectory;
 
         // Split the path
@@ -104,28 +113,28 @@ public class Shell {
         boolean finished = false;
 
         // Loop over each path, find the folder matching the name and set the directory equal to the matching directory.
-        for (int i = 0; i < paths.size() && !finished; i++) {
+        for (int i = 0; i < paths.size(); i++) {
 
-            for (int k = 0; k < currentDirectory.length; k++) {
+            for (int k = 0; k < workingDirectory.length; k++) {
 
-                if (currentDirectory[k].getFileName().equals(paths.get(i))) {
+                if (workingDirectory[k].getFileName().equals(paths.get(i))) {
                     // We found the folder / file in the directory
 
                     // Determine if the file is a folder or file
-                    if (currentDirectory[k].isFileDirectory()) {
+                    if (workingDirectory[k].isFileDirectory()) {
                         // Directory
-                        currentDirectory = currentDirectory[k].getDataDirectory().getFileInfo();
+                        workingDirectory = workingDirectory[k].getDataDirectory().getFileInfo();
                     } else {
                         // File
-                        buffer = currentDirectory[k].getDataFile(false).getBuffer();
-                        currentDirectory = backup;
+                        buffer = workingDirectory[k].getDataFile(false).getBuffer();
+                        workingDirectory = backup;
                         // Now that buffer is filled, set the size attribute equal to length
                     }
                     break;
                 }
 
                 // If the code has gotten here we know the folder is not in the directory
-                if (k == currentDirectory.length - 1) {
+                if (k == workingDirectory.length - 1) {
                     finished = true;
                     break;
                 }
@@ -136,12 +145,12 @@ public class Shell {
             if (finished) {
                 System.out.print("Path not found: ");
                 System.out.println(formatCurrentPath(paths));
-                currentDirectory = backup;
+                workingDirectory = backup;
                 return new byte[0];
             }
         }
 
-        this.returnDirectory = currentDirectory;
+        if (setDirectory) this.currentDirectory = workingDirectory;
         return buffer;
     }
 
