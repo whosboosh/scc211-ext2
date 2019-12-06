@@ -63,7 +63,7 @@ public class Helper {
 
         //System.out.println(Arrays.toString(byteBuffer));
         //Helper.dumpHexBytes(byteBuffer);
-        return Helper.wrap(byteBuffer);
+        return Helper.wrap(shortenBuffer(byteBuffer));
     }
 
     public static byte[] getIndirectData(int pointer, Inode inode, RandomAccessFile file) throws IOException {
@@ -80,8 +80,6 @@ public class Helper {
                 byte[] temp = Helper.wrap(1024, file, buffer.get(k)*1024).array();
                 System.arraycopy(temp, 0, indirectData, k*1024 , temp.length);
             }
-
-            indirectData = shortenBuffer(indirectData);
 
         }
 
@@ -101,8 +99,6 @@ public class Helper {
                 System.arraycopy(temp, 0, indirectData, i*1024 , temp.length);
             }
 
-            indirectData = shortenBuffer(indirectData);
-
         }
         return indirectData;
     }
@@ -119,8 +115,6 @@ public class Helper {
                 byte[] temp = getDblIndirectData(buffer.get(i), inode, file);
                 System.arraycopy(temp, 0, indirectData, i*1024 , temp.length);
             }
-
-            indirectData = shortenBuffer(indirectData);
 
         }
         return indirectData;
