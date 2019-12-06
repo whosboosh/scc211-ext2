@@ -87,7 +87,7 @@ public class Shell {
                         currentDirectory = currentDirectory[k].getDataDirectory().getFileInfo();
                     } else {
                         // File
-                        buffer = currentDirectory[k].getDataFile().getBuffer();
+                        buffer = currentDirectory[k].getDataFile(false).getBuffer();
                         currentDirectory = backup;
                         // Now that buffer is filled, set the size attribute equal to length
                     }

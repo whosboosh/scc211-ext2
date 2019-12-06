@@ -45,7 +45,7 @@ public class Ext2File {
                         if (i == paths.length-1) { // last iteration
                             System.out.println("File found: "+ path +". Loading data into buffer");
                         }
-                        buffer = directoryEntries[k].getDataFile().getBuffer();
+                        buffer = directoryEntries[k].getDataFile(true).getBuffer();
                         // Now that buffer is filled, set the size attribute equal to length
                         size = buffer.length;
                     }
@@ -55,81 +55,6 @@ public class Ext2File {
 
         }
 
-    }
-
-    /**
-     * Prints the files and folders of each directory until reaching the specified path
-     * @throws IOException
-     */
-    public void printFullPath() throws IOException {
-        String[] temp = path.split("/");
-
-        String[] paths = new String[temp.length+1];
-        System.arraycopy(temp, 0, paths, 0, temp.length);
-
-        DirectoryEntry[] directoryEntries = rootDirectoryEntries;
-        DirectoryEntry[] previousEntries = rootDirectoryEntries;
-
-        boolean finished = false;
-
-        for (int i = 1; i < paths.length && !finished; i++) {
-
-            for (int k = 0; k < directoryEntries.length; k++) {
-
-                if (directoryEntries[k].getFileName().equals(paths[i])) {
-
-                    if (directoryEntries[k].isFileDirectory()) {
-                        previousEntries = directoryEntries;
-                        directoryEntries = directoryEntries[k].getDataDirectory().getFileInfo();
-                    }
-
-                    break;
-                }
-
-                if (i != paths.length-1) {
-
-                    // If the code has gotten here we know the folder is not in the directory
-                    if (k == directoryEntries.length - 1) {
-                        finished = true;
-                    }
-                }
-
-            }
-
-            if (!finished || i == paths.length-2) {
-                System.out.println("---------------------");
-                for (int j = 1; j < i+1; j++) {
-                    if (j == 1) {
-                        System.out.print("/");
-                    } else if (j > 2) {
-                        System.out.print("/"+paths[j-1]);
-                    } else {
-                        System.out.print(paths[j-1]);
-                    }
-                }
-                System.out.println();
-                System.out.println("---------------------");
-                if (i == paths.length-1 && !finished || i == paths.length-2 && finished) {
-                    for (DirectoryEntry directoryEntry : directoryEntries) {
-                        System.out.println(directoryEntry.print());
-                    }
-                } else {
-                    for (DirectoryEntry directoryEntry : previousEntries) {
-                        System.out.println(directoryEntry.print());
-                    }
-                }
-            }
-            if (finished) {
-                System.out.println("----------------------");
-                System.out.print("Specified path does not exist: ");
-                for (int j = 1; j < i + 1; j++) {
-                    System.out.print("/" + paths[j]);
-                }
-                System.out.println();
-                System.out.println("----------------------");
-            }
-
-        }
     }
 
 

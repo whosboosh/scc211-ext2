@@ -40,9 +40,11 @@ public class DirectoryEntry {
         return new Directory(inode, file, superblock, blockGroups);
     }
 
-    public File getDataFile() throws IOException {
-        int index = (buffer.getInt(0) - 1) / superblock.getNumInodesPerGroup();
-        System.out.println(blockGroups[index].getGroupDesc().getGroupDescriptorInformation());
+    public File getDataFile(boolean logging) throws IOException {
+        if (logging) {
+            int index = (buffer.getInt(0) - 1) / superblock.getNumInodesPerGroup();
+            System.out.println(blockGroups[index].getGroupDesc().getGroupDescriptorInformation());
+        }
         return new File(inode, file);
     }
 

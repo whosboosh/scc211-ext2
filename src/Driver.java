@@ -8,9 +8,7 @@ public class Driver {
         try {
             Volume volume = new Volume("resources/ext2fs");
             System.out.println(volume.getBlockGroups()[0].getSuperblock().getSuperBlockInformation());
-            Ext2File file = new Ext2File(volume,"/");
-
-            file.printFullPath();
+            Ext2File file = new Ext2File(volume,"/files/dbl-ind-e");
 
             byte[] buf = file.read(0, file.size);
             System.out.format ("%s\n", new String(buf));
@@ -22,7 +20,7 @@ public class Driver {
             System.out.println("Welcome to SCC 211 Ext2 File System Driver Shell, type 'exit' to close");
             String path = "";
             while (true) {
-                String shellEntry = ":"+path+"$";
+                String shellEntry = ":"+path+"/$";
                 System.out.print(volume.getBlockGroups()[0].getSuperblock().getVolumeLabel()+shellEntry);
                 String input = scanner.nextLine();
 
