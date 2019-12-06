@@ -6,6 +6,7 @@ import java.util.List;
 public class Shell {
 
     private DirectoryEntry[] currentDirectory;
+    private DirectoryEntry[] returnDirectory;
     private DirectoryEntry[] rootDirectory;
     private String currentPath;
 
@@ -43,6 +44,8 @@ public class Shell {
             currentPath = formatCurrentPath(splitPath(path));
         }
 
+        this.currentDirectory = returnDirectory;
+
         return currentPath;
     }
 
@@ -58,6 +61,7 @@ public class Shell {
         if (path.charAt(0) == '/' && paths.size() > 1) {
             paths.remove(0);
         }
+
 
         return paths;
     }
@@ -110,6 +114,7 @@ public class Shell {
             }
         }
 
+        this.returnDirectory = currentDirectory;
         return buffer;
     }
 
