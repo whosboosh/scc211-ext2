@@ -35,11 +35,15 @@ public class Shell {
     public String cd(String path) throws IOException {
 
 
-        setWorkingDirectory(path);
+        if (setWorkingDirectory(path).length == 0) {
+            if (currentPath == null) {
+                return "/";
+            }
+        } else {
+            currentPath = formatCurrentPath(splitPath(path));
+        }
 
-        System.out.println(formatCurrentPath(new LinkedList<>(Arrays.asList(path.split("/")))));
-
-        return formatCurrentPath(new LinkedList<>(Arrays.asList(path.split("/"))));
+        return currentPath;
     }
 
     public List<String> splitPath(String path) {
@@ -60,7 +64,7 @@ public class Shell {
 
     public byte[] setWorkingDirectory(String path) throws IOException {
         // The buffer the data will be saved to
-        byte[] buffer = new byte[0];
+        byte[] buffer = new byte[1];
 
         DirectoryEntry[] backup = currentDirectory;
 
@@ -102,6 +106,7 @@ public class Shell {
                 System.out.print("Path not found: ");
                 System.out.println(formatCurrentPath(paths));
                 currentDirectory = backup;
+                return new byte[0];
             }
         }
 
@@ -112,14 +117,8 @@ public class Shell {
 
         StringBuilder builtPath = new StringBuilder();
 
-        for (int i = 0; i < paths.size(); i++) {
-            if (i == 0) {
-                builtPath.append("/");
-            } else if (i > 1) {
-                builtPath.append("/").append(paths.get(i - 1));
-            } else {
-                builtPath.append(paths.get(i - 1));
-            }
+        for (String path : paths) {
+            builtPath.append("/").append(path);
         }
 
         return builtPath.toString();
