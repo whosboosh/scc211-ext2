@@ -12,6 +12,11 @@ public class Superblock {
     private int numInodesPerGroup;
     private byte[] volumeLabel = new byte[16];
 
+    /**
+     * Creates a superblock, repeatable data so we only have to seek 1024 bytes in.
+     * @param file File to seek to
+     * @throws IOException
+     */
     public Superblock(RandomAccessFile file) throws IOException {
 
         ByteBuffer buffer = Helper.wrap(1024, file, 1024);
@@ -51,6 +56,10 @@ public class Superblock {
         return new String(volumeLabel);
     }
 
+    /**
+     * Formats the string of the contents of superblock
+     * @return
+     */
     public String getSuperBlockInformation() {
         return ("---------------------\nSUPERBLOCK INFORMATION\nMagic Number: "+getMagicNumber()+"\nTotal Inodes: "+getTotalInodes()+"\nTotal Blocks: "+getTotalBlocks()
                 +"\nNumber blocks per Group: "+getNumBlocksPerGroup()+"\nNumber inodes per Group: "+getNumInodesPerGroup()

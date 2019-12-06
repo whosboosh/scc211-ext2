@@ -8,12 +8,25 @@ import java.util.Date;
 
 public class Helper {
 
+    /**
+     * Helper method to simply wrap and order the data provided as little-endian
+     * @param byteArray returns a ByteBuffer from this array
+     * @return ByteBuffer in little-endian
+     */
     public static ByteBuffer wrap(byte[] byteArray) {
         ByteBuffer buffer = ByteBuffer.wrap(byteArray);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         return buffer;
     }
 
+    /**
+     * Seeks to a certain part of the file and orders the data to little-endian
+     * @param length - Length of the array to be read
+     * @param file - file to read
+     * @param seekLength - seek position
+     * @return ByteBuffer in little endian
+     * @throws IOException
+     */
     public static ByteBuffer wrap(int length, RandomAccessFile file, int seekLength) throws IOException {
         byte[] bytes = new byte[length];
         file.seek(seekLength);
@@ -21,6 +34,13 @@ public class Helper {
         return wrap(bytes);
     }
 
+    /**
+     * Combine the pointers from the direct inode pointers, indirect, double and triple into one buffer
+     * @param inode inode for the set of data
+     * @param file file to be read
+     * @return ByteBuffer - Merged data from all pointers
+     * @throws IOException
+     */
     public static ByteBuffer combinePointers(Inode inode, RandomAccessFile file) throws IOException {
 
         int[] pointers = inode.getPointers();
@@ -66,6 +86,14 @@ public class Helper {
         return Helper.wrap(shortenBuffer(byteBuffer));
     }
 
+    /**
+     * Read the indirect data
+     * @param pointer pointer to first block of pointer data
+     * @param inode inode for the pointer
+     * @param file file to be read
+     * @return byte[] of complete indirect data
+     * @throws IOException
+     */
     public static byte[] getIndirectData(int pointer, Inode inode, RandomAccessFile file) throws IOException {
         byte[] indirectData = new byte[0];
         if (pointer != 0) {
@@ -86,6 +114,14 @@ public class Helper {
         return indirectData;
     }
 
+    /**
+     * Read the double indirect data
+     * @param pointer pointer to first block of double pointer data
+     * @param inode inode for the pointer
+     * @param file file to be read
+     * @return byte[] of complete double indirect data
+     * @throws IOException
+     */
     public static byte[] getDblIndirectData(int pointer, Inode inode, RandomAccessFile file) throws IOException {
         byte[] indirectData = new byte[0];
         if (pointer != 0) {
@@ -103,6 +139,14 @@ public class Helper {
         return indirectData;
     }
 
+    /**
+     * Read the triple indirect data
+     * @param pointer pointer to first block of triple pointer data
+     * @param inode inode for the pointer
+     * @param file file to be read
+     * @return byte[] of complete triple indirect data
+     * @throws IOException
+     */
     public static byte[] getTrplIndirectData(int pointer, Inode inode, RandomAccessFile file) throws IOException {
         byte[] indirectData = new byte[0];
         if (pointer != 0) {
@@ -120,6 +164,13 @@ public class Helper {
         return indirectData;
     }
 
+    /**
+     * Reduces the given pointers down to a single buffer
+     * @param pointer pointers
+     * @param file file to read
+     * @return ArrayList<Integer> of pointer data
+     * @throws IOException
+     */
     public static ArrayList<Integer> reducePointers(int pointer, RandomAccessFile file) throws IOException {
         ByteBuffer indirectBlock = Helper.wrap(1024, file, (pointer * 1024)); // Contains 256 4 byte pointers to data blocks
 
@@ -132,6 +183,11 @@ public class Helper {
         return indirectNotNull;
     }
 
+    /**
+     * Removes the trailing 0's in a buffer if empty
+     * @param buffer byte[] buffer
+     * @return
+     */
     public static byte[] shortenBuffer(byte[] buffer) {
         // Remove trailing 0's in file because the inode length isn't necessarily the actual contents length
         byte[] actualData = new byte[0];
@@ -145,6 +201,10 @@ public class Helper {
         return actualData;
     }
 
+    /**
+     * Dumps the bytes in hex
+     * @param bytes bytes to be dumped.
+     */
     public static void dumpHexBytes(byte[] bytes) {
         for (int i = 0; i < bytes.length / 16; i++) {
             for (int k = 0; k < 32; k++) {

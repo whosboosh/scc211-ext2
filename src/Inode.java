@@ -20,6 +20,14 @@ public class Inode {
     private long fileSize;
     private ByteBuffer buffer;
 
+    /**
+     * Creates an inode
+     * @param file file to read
+     * @param superblock superblock reference
+     * @param groupDesc groupdescriptor for this inode
+     * @param inodeNumber inode number in the inode table
+     * @throws IOException
+     */
     public Inode(RandomAccessFile file, Superblock superblock, GroupDesc groupDesc, int inodeNumber) throws IOException {
 
         int inodesPerGroup = superblock.getNumInodesPerGroup();

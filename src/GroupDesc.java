@@ -7,6 +7,12 @@ public class GroupDesc {
     private ByteBuffer buffer;
     private int inodeTablePointer;
 
+    /**
+     * Create a groupdescriptor
+     * @param file file to be read, creates the buffer of groupdescriptor for inode table pointer
+     * @param blockGroup block group pointer
+     * @throws IOException
+     */
     public GroupDesc(RandomAccessFile file, int blockGroup) throws IOException {
 
         // We assume that the block size is 1024 bytes
@@ -21,6 +27,10 @@ public class GroupDesc {
         inodeTablePointer = buffer.getInt(8);
     }
 
+    /**
+     * Format the contents of groupdescriptor nicely
+     * @return
+     */
     public String getGroupDescriptorInformation() {
         return ("---------------------\nGROUP DESCRIPTOR INFORMATION\nInode Table Pointer : "+getInodeTablePointer()+"\n---------------------");
     }

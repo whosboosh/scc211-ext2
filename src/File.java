@@ -6,6 +6,12 @@ public class File {
 
     private ByteBuffer buffer;
 
+    /**
+     * Create a file
+     * @param inode inode for file,
+     * @param file RandomAccessFile - fileystem to be read
+     * @throws IOException
+     */
     public File(Inode inode, RandomAccessFile file) throws IOException {
 
         buffer = Helper.combinePointers(inode, file);

@@ -9,15 +9,18 @@ public class Ext2File {
     private byte[] buffer;
     public static int size;
     public static int position;
-    private String path;
     DirectoryEntry[] rootDirectoryEntries;
 
+    /**
+     * Create an ext2file, seeks to where the file is and creates a buffer of the data
+     * @param volume Volume to read
+     * @param path Path to find
+     * @throws IOException
+     */
     public Ext2File(Volume volume, String path) throws IOException {
         // Takes volume and the path, now recursively traverse volume to find the file
 
         Directory root = volume.getRoot();
-
-        this.path = path;
 
         String[] paths = path.split("/");
 
@@ -58,6 +61,12 @@ public class Ext2File {
     }
 
 
+    /**
+     * Read buffer from specified start and length bytes
+     * @param startByte int
+     * @param length int
+     * @return byte[] of the cut data
+     */
     public byte[] read(int startByte, int length) {
         byte[] data = new byte[length-startByte];
         for (int i = startByte; i < length; i++) {
@@ -68,6 +77,11 @@ public class Ext2File {
     }
 
 
+    /**
+     * Read from current position and length bytes
+     * @param length length of new bytearray
+     * @return
+     */
     public byte[] read(int length) {
         byte[] data = new byte[size-position];
         for(int i = position; i < length+position; i++) {
@@ -77,6 +91,10 @@ public class Ext2File {
         return data;
     }
 
+    /**
+     * Moves the position of the buffer
+     * @param position int position
+     */
     public void seek(int position) {
         this.position = position;
     }

@@ -16,8 +16,17 @@ public class DirectoryEntry {
     private BlockGroup[] blockGroups;
     private ByteBuffer buffer;
 
+    /**
+     * Create a Directory Entry
+     * @param buffer Buffer for the entry
+     * @param file System File to be read
+     * @param superblock Reference to SuperBlock
+     * @param blockGroups Reference to all Block Groups so we can find what one to use later on using inode of entry
+     * @throws IOException
+     */
     public DirectoryEntry(ByteBuffer buffer, RandomAccessFile file, Superblock superblock, BlockGroup[] blockGroups) throws IOException {
 
+        // Need to find what index in blockGroups array the inode is in.
         int index = (buffer.getInt(0) - 1) / superblock.getNumInodesPerGroup();
 
         // See specification of directory for clarity on chosen byte values
@@ -36,10 +45,21 @@ public class DirectoryEntry {
         this.blockGroups = blockGroups;
     }
 
+    /**
+     * Returns a new directory for the entry
+     * @return Directory
+     * @throws IOException
+     */
     public Directory getDataDirectory() throws IOException {
         return new Directory(inode, file, superblock, blockGroups);
     }
 
+    /**
+     * Returns a new File object for the entry
+     * @param logging
+     * @return
+     * @throws IOException
+     */
     public File getDataFile(boolean logging) throws IOException {
         if (logging) {
             int index = (buffer.getInt(0) - 1) / superblock.getNumInodesPerGroup();
@@ -48,10 +68,18 @@ public class DirectoryEntry {
         return new File(inode, file);
     }
 
+    /**
+     * Checks if the entry is a directory or file
+     * @return
+     */
     public boolean isFileDirectory() {
         return (inode.getFileMode() & 0x4000) > 0;
     }
 
+    /**
+     * ls equivelant command on directoryEntry.
+     * @return String of the ls row
+     */
     public String print() {
 
         boolean directory = (inode.getFileMode() & 0x4000) > 0;

@@ -5,11 +5,15 @@ import java.util.List;
 
 public class Shell {
 
-    private DirectoryEntry[] currentDirectory;
-    private DirectoryEntry[] returnDirectory;
-    private DirectoryEntry[] rootDirectory;
+    private DirectoryEntry[] currentDirectory; // The current working directory
+    private DirectoryEntry[] returnDirectory; // Return value of searching for correct directory given path
+    private DirectoryEntry[] rootDirectory; // Keep reference to root to search absolute
     private String currentPath;
 
+    /**
+     * Creates a shell instance.
+     * @param volume
+     */
     public Shell(Volume volume) {
         // To start with, we need to set currentDirectory equal to root
         rootDirectory = volume.getRoot().getFileInfo();   // Get root directory
@@ -25,6 +29,11 @@ public class Shell {
         }
     }
 
+    /**
+     * Prints the contents of the buffer returned from setWorkingDirectory method
+     * @param path path of the file the user is accessing
+     * @throws IOException
+     */
     public void cat(String path) throws IOException {
 
         byte[] buffer = setWorkingDirectory(path);
@@ -33,6 +42,12 @@ public class Shell {
         System.out.format ("%s\n", new String(buffer));
     }
 
+    /**
+     * Moves the current directory to a new directory. Works absolute or relative
+     * @param path String path - the path the user wants to go to
+     * @return byte of the file at the location or length 0 if file not found
+     * @throws IOException
+     */
     public String cd(String path) throws IOException {
 
 
@@ -49,6 +64,11 @@ public class Shell {
         return currentPath;
     }
 
+    /**
+     *
+     * @param path String of the path the user wants to go to
+     * @return List<String> of each path in the string
+     */
     public List<String> splitPath(String path) {
         // Split the path
         List<String> paths = new LinkedList<>(Arrays.asList(path.split("/")));
@@ -66,6 +86,12 @@ public class Shell {
         return paths;
     }
 
+    /**
+     * Moves the currentDirectory parameter to the specified directory
+     * @param path String path the user wants to go to
+     * @return byte[] of the data at the path or 0 if not found or directory
+     * @throws IOException
+     */
     public byte[] setWorkingDirectory(String path) throws IOException {
         // The buffer the data will be saved to
         byte[] buffer = new byte[1];
@@ -106,6 +132,7 @@ public class Shell {
 
             }
 
+            // Path not found
             if (finished) {
                 System.out.print("Path not found: ");
                 System.out.println(formatCurrentPath(paths));
@@ -118,6 +145,12 @@ public class Shell {
         return buffer;
     }
 
+
+    /**
+     * Add prefixing slashes to the path for shell logging
+     * @param paths
+     * @return String with updated absolute path
+     */
     public String formatCurrentPath(List<String> paths) {
 
         StringBuilder builtPath = new StringBuilder();

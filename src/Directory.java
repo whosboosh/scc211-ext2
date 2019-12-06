@@ -11,10 +11,20 @@ public class Directory {
     private List<DirectoryEntry> directoryEntries = new ArrayList<>();
     private ByteBuffer buffer;
 
+    /**
+     * Creates a directory
+     * @param inode Inode reference
+     * @param file Filesystem to search
+     * @param superblock Reference to superblock
+     * @param blockGroups Reference to all blockGroups
+     * @throws IOException
+     */
     public Directory(Inode inode, RandomAccessFile file, Superblock superblock, BlockGroup[] blockGroups) throws IOException {
 
+        // Total length of the directory
         long directoryLength = inode.getFileSize();
 
+        // Create the buffer from the inode of file
         buffer = Helper.combinePointers(inode, file);
 
         int i = 0;
@@ -42,6 +52,10 @@ public class Directory {
 
     }
 
+    /**
+     * Returns an equivalent array of the DirectoryEntries
+     * @return DirectoryEntry[]
+     */
     public DirectoryEntry[] getFileInfo() {
         DirectoryEntry[] array = new DirectoryEntry[directoryEntries.size()];
         for (int i = 0; i < directoryEntries.size(); i++) {
