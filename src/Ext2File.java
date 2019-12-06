@@ -96,25 +96,18 @@ public class Ext2File {
 
                     break;
                 }
-                
+
                 if (i != paths.length-1) {
 
                     // If the code has gotten here we know the folder is not in the directory
                     if (k == directoryEntries.length - 1) {
                         finished = true;
-                        System.out.println("----------------------");
-                        System.out.print("Specified path does not exist: ");
-                        for (int j = 1; j < i + 1; j++) {
-                            System.out.print("/" + paths[j]);
-                        }
-                        System.out.println();
-                        System.out.println("----------------------");
                     }
                 }
 
             }
 
-            if (!finished) {
+            if (!finished || i == paths.length-2) {
                 System.out.println("---------------------");
                 for (int j = 1; j < i+1; j++) {
                     if (j == 1) {
@@ -127,7 +120,7 @@ public class Ext2File {
                 }
                 System.out.println();
                 System.out.println("---------------------");
-                if (i == paths.length-1) {
+                if (i == paths.length-1 && !finished || i == paths.length-2 && finished) {
                     for (DirectoryEntry directoryEntry : directoryEntries) {
                         System.out.println(directoryEntry.print());
                     }
@@ -136,6 +129,15 @@ public class Ext2File {
                         System.out.println(directoryEntry.print());
                     }
                 }
+            }
+            if (finished) {
+                System.out.println("----------------------");
+                System.out.print("Specified path does not exist: ");
+                for (int j = 1; j < i + 1; j++) {
+                    System.out.print("/" + paths[j]);
+                }
+                System.out.println();
+                System.out.println("----------------------");
             }
 
         }
