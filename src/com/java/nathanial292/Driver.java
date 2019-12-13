@@ -1,3 +1,5 @@
+package com.java.nathanial292;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -8,9 +10,14 @@ public class Driver {
         try {
             Volume volume = new Volume("resources/ext2fs");
             System.out.println(volume.getBlockGroups()[0].getSuperblock().getSuperBlockInformation());
-            Ext2File file = new Ext2File(volume,"/files/dbl-ind-e");
+
+
+            Ext2File file = new Ext2File(volume,"/files/dbl-ind-s");
 
             byte[] buf = file.read(0, file.size);
+
+            Helper.dumpHexBytes(buf);
+
             System.out.format ("%s\n", new String(buf));
 
             Shell shell = new Shell(volume);

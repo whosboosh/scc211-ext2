@@ -1,3 +1,6 @@
+package com.java.nathanial292;
+
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -106,7 +109,7 @@ public class DirectoryEntry {
         permissions+= otherExecute ? "x " : "- ";
 
         String outputString;
-        outputString = permissions + getInode().getNumHardLinks() + " " + getInode().getUserID() + " " + getInode().getGroupID() + " " + getLength() + " "+ new Date(getInode().getCreationTime()) + " ";
+        outputString = permissions + getInode().getNumHardLinks() + " " + getInode().getUserID() + " " + getInode().getGroupID() + " " + inode.getFileSize() + " "+ new Date(getInode().getCreationTime()) + " ";
 
         outputString = outputString + getFileName();
         return outputString;

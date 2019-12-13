@@ -1,3 +1,5 @@
+package com.java.nathanial292;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,6 +40,8 @@ public class Volume extends RandomAccessFile {
         int i = 0;
         while (i < totalBlocks) {
             blockGroups[i] = new BlockGroup(this, i);
+            if (i < 3)
+            System.out.println(blockGroups[i].getGroupDesc().getGroupDescriptorInformation());
             i++;
         }
 

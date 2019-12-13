@@ -1,3 +1,6 @@
+package com.java.nathanial292;
+
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -8,6 +11,8 @@ public class Shell {
     private DirectoryEntry[] currentDirectory; // The current working directory
     private DirectoryEntry[] returnDirectory; // Return value of searching for correct directory given path
     private DirectoryEntry[] rootDirectory; // Keep reference to root to search absolute
+    DirectoryEntry[] workingDirectory;
+
     private String currentPath;
 
     /**
@@ -55,6 +60,7 @@ public class Shell {
             if (currentPath == null) {
                 return "/";
             }
+            this.currentDirectory = this.returnDirectory;
         } else {
             currentPath = formatCurrentPath(splitPath(path));
         }
@@ -76,7 +82,7 @@ public class Shell {
 
         // Figure out if relative or absolute, relative will just use currentDirectory
         if (path.charAt(0) == '/') { // Absolute
-            currentDirectory = rootDirectory;
+            workingDirectory = rootDirectory;
         }
         if (path.charAt(0) == '/' && paths.size() > 1) {
             paths.remove(0);
@@ -97,6 +103,8 @@ public class Shell {
         byte[] buffer = new byte[1];
 
         DirectoryEntry[] backup = currentDirectory;
+        workingDirectory = currentDirectory;
+
 
         // Split the path
         List<String> paths = splitPath(path);
@@ -106,26 +114,26 @@ public class Shell {
         // Loop over each path, find the folder matching the name and set the directory equal to the matching directory.
         for (int i = 0; i < paths.size() && !finished; i++) {
 
-            for (int k = 0; k < currentDirectory.length; k++) {
+            for (int k = 0; k < workingDirectory.length; k++) {
 
-                if (currentDirectory[k].getFileName().equals(paths.get(i))) {
+                if (workingDirectory[k].getFileName().equals(paths.get(i))) {
                     // We found the folder / file in the directory
 
                     // Determine if the file is a folder or file
-                    if (currentDirectory[k].isFileDirectory()) {
+                    if (workingDirectory[k].isFileDirectory()) {
                         // Directory
-                        currentDirectory = currentDirectory[k].getDataDirectory().getFileInfo();
+                        workingDirectory = workingDirectory[k].getDataDirectory().getFileInfo();
                     } else {
                         // File
-                        buffer = currentDirectory[k].getDataFile(false).getBuffer();
-                        currentDirectory = backup;
+                        buffer = workingDirectory[k].getDataFile(false).getBuffer();
+                        workingDirectory = backup;
                         // Now that buffer is filled, set the size attribute equal to length
                     }
                     break;
                 }
 
                 // If the code has gotten here we know the folder is not in the directory
-                if (k == currentDirectory.length - 1) {
+                if (k == workingDirectory.length - 1) {
                     finished = true;
                     break;
                 }
@@ -136,12 +144,12 @@ public class Shell {
             if (finished) {
                 System.out.print("Path not found: ");
                 System.out.println(formatCurrentPath(paths));
-                currentDirectory = backup;
+                this.returnDirectory = backup;
                 return new byte[0];
             }
         }
 
-        this.returnDirectory = currentDirectory;
+        this.returnDirectory = workingDirectory;
         return buffer;
     }
 
