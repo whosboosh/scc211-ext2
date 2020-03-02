@@ -47,6 +47,11 @@ public class Driver {
                     shell.cat(commands[1]);
                 }
 
+                if (commands[0].equals("hex")) {
+                    if (commands.length != 2) continue;
+                    shell.hex(commands[1]);
+                }
+
                 if (input.equals("exit")) {
                     break;
                 }

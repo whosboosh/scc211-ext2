@@ -34,6 +34,12 @@ public class Shell {
         }
     }
 
+    public void hex(String path) throws IOException {
+        byte[] buffer = setWorkingDirectory(path);
+
+        Helper.dumpHexBytes(buffer);
+    }
+
     /**
      * Prints the contents of the buffer returned from setWorkingDirectory method
      * @param path path of the file the user is accessing
